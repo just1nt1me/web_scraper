@@ -1,2 +1,7 @@
 streamlit
-bs4.beautifulsoup
+bs4
+fastapi
+uvicorn
+requests
+beautifulsoup4
+pytz

@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from oakhouse_app import Oakhouse
 from pydantic import BaseModel
-import uvicorn
+import requests
+import streamlit as st
 
 app = FastAPI(
     title="ShareHouses web scraper",
@@ -20,8 +21,18 @@ async def predict(input: UrlInput):
     vacancies = sharehouse.get_vacancies(urls)
     return {'The rooms available are:': vacancies}
 
-if __name__ == "__main__":
-    uvicorn.run(
-        "api:app",
-        reload=True,
-    )
+st.title("ShareHouses web scraper")
+
+# Input for URL
+url_input = st.text_input("Enter the URL of the OakHouse:")
+
+if st.button("Check Vacancies"):
+    # Make a POST request to the FastAPI server
+    response = requests.post("http://localhost:8000/sharehouse", json={"url": url_input})
+
+    if response.status_code == 200:
+        # Display the response from FastAPI server
+        vacancies = response.json()['The rooms available are:']
+        st.write(vacancies)
+    else:
+        st.write("Error: Could not retrieve vacancies.")

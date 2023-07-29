@@ -3,9 +3,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
-from email_config import pswd
+from email_config import pswd, users
 from datetime import datetime
+from oakhouse import Oakhouse
 import os
+import sys
 
 # Setup port number and server name
 
@@ -13,17 +15,12 @@ smtp_port = 587                 # Standard secure SMTP port
 smtp_server = "smtp.gmail.com"  # Google SMTP Server
 
 # Set up the email lists
-email_from = "example_email@gmail.com"
-email_list = ["example_email@gmail.com"]
-
-# Define the password (better to reference externally)
-
+email_from = "jccarville@gmail.com"
+email_list = users
 
 # name the email subject
 now = datetime.now()
 subject = f"{now} Oakhouse Vacancies"
-
-
 
 # Define the email function (dont call it email!)
 def send_emails(email_list):
@@ -47,17 +44,18 @@ def send_emails(email_list):
         filename = os.path.join(path, 'oakhouse_vacancies.txt')
 
         # Open the file in python as a binary
-        attachment= open(filename, 'rb')  # r for read and b for binary
+        with open(filename, 'rb') as attachment:
+        # attachment= open(filename, 'rb')  # r for read and b for binary
 
-        # Encode as base 64
-        attachment_package = MIMEBase('application', 'octet-stream')
-        attachment_package.set_payload((attachment).read())
-        encoders.encode_base64(attachment_package)
-        attachment_package.add_header('Content-Disposition', "attachment; filename= " + filename)
-        msg.attach(attachment_package)
+            # Encode as base 64
+            attachment_package = MIMEBase('application', 'octet-stream')
+            attachment_package.set_payload((attachment).read())
+            encoders.encode_base64(attachment_package)
+            attachment_package.add_header('Content-Disposition', "attachment; filename= " + filename)
+            msg.attach(attachment_package)
 
-        # Cast as string
-        text = msg.as_string()
+            # Cast as string
+            text = msg.as_string()
 
         # Connect with the server
         print("Connecting to server...")
@@ -74,9 +72,12 @@ def send_emails(email_list):
         print(f"Email sent to: {person}")
         print()
 
-    # Close the port
-    TIE_server.quit()
+        # Close the port
+        TIE_server.quit()
 
 
-# Run the function
-send_emails(email_list)
+if __name__ == '__main__':
+    Oakhouse().get_output()
+    # Redirect the standard output back to the console
+    sys.stdout = sys.__stdout__
+    send_emails(email_list)

@@ -17,7 +17,7 @@ class Oakhouse:
     """
     def get_soups(self):
         self.urls = {
-            # "Earth Haneda": "https://www.oakhouse.jp/eng/house/998",
+            "Oak Apartment Eda": "https://www.oakhouse.jp/eng/house/910",
             "Gran Hiyoshi": "https://www.oakhouse.jp/eng/house/1026",
             # "Gran Tamagawa": "https://www.oakhouse.jp/eng/house/1029",
             "Musashi Kosugi": "https://www.oakhouse.jp/eng/house/921"
@@ -43,7 +43,7 @@ class Oakhouse:
                 room_number = room.find("p", class_="p-room__caset__number").text.strip()
                 room_status = re.sub(r'\s*\|\s*\n\s*\n\s*', ' ', room_number)
 
-                if house_name == "Gran Hiyoshi":
+                if house_name == "Gran Hiyoshi" or "Oak Apartment Eda":
                     if "Vacancy" in room_status:
                         try:
                             room_info = room.find("table", class_="p-room__caset__table").text.strip().split("\n")

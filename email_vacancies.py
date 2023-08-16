@@ -25,10 +25,18 @@ subject = f"{now} Oakhouse Vacancies"
 # Define the email function (dont call it email!)
 def send_emails(email_list):
 
+    # Connect with the server
+    print("Connecting to server...")
+    TIE_server = smtplib.SMTP(smtp_server, smtp_port)
+    TIE_server.starttls()
+    TIE_server.login(email_from, pswd)
+    print("Succesfully connected to server")
+    print()
+
     for person in email_list:
 
         # Make the body of the email
-        body = f"Here are today's Oakhouse Vacancies"
+        body = f"Today's Oakhouse Vacancies"
 
         # make a MIME object to define parts of the email
         msg = MIMEMultipart()
@@ -56,14 +64,6 @@ def send_emails(email_list):
 
             # Cast as string
             text = msg.as_string()
-
-        # Connect with the server
-        print("Connecting to server...")
-        TIE_server = smtplib.SMTP(smtp_server, smtp_port)
-        TIE_server.starttls()
-        TIE_server.login(email_from, pswd)
-        print("Succesfully connected to server")
-        print()
 
 
         # Send emails to "person" as list is iterated

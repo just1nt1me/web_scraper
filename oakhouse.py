@@ -18,9 +18,10 @@ class Oakhouse:
     def get_soups(self):
         self.urls = {
             "Oak Apartment Eda": "https://www.oakhouse.jp/eng/house/910",
-            "Gran Hiyoshi": "https://www.oakhouse.jp/eng/house/1026",
             # "Gran Tamagawa": "https://www.oakhouse.jp/eng/house/1029",
-            "Musashi Kosugi": "https://www.oakhouse.jp/eng/house/921"
+            "Musashi Kosugi": "https://www.oakhouse.jp/eng/house/921",
+            "Social Residence Ojima": "https://www.oakhouse.jp/eng/house/1074",
+            "Foro Eifukucho": "https://www.oakhouse.jp/eng/house/979"
         }
         self.results = []
         for key, value in self.urls.items():
@@ -43,7 +44,7 @@ class Oakhouse:
                 room_number = room.find("p", class_="p-room__caset__number").text.strip()
                 room_status = re.sub(r'\s*\|\s*\n\s*\n\s*', ' ', room_number)
 
-                if house_name == "Gran Hiyoshi" or "Oak Apartment Eda":
+                if house_name == "Social Residence Ojima" or "Oak Apartment Eda" or "Foro Eifukucho":
                     if "Vacancy" in room_status:
                         try:
                             room_info = room.find("table", class_="p-room__caset__table").text.strip().split("\n")

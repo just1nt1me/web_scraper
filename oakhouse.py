@@ -17,7 +17,7 @@ class Oakhouse:
     """
     def get_soups(self):
         self.urls = {
-            "Oak Apartment Eda": "https://www.oakhouse.jp/eng/house/910",
+            # "Oak Apartment Eda": "https://www.oakhouse.jp/eng/house/910",
             # "Gran Tamagawa": "https://www.oakhouse.jp/eng/house/1029",
             "Musashi Kosugi": "https://www.oakhouse.jp/eng/house/921",
             "Social Residence Ojima": "https://www.oakhouse.jp/eng/house/1074",
@@ -35,6 +35,7 @@ class Oakhouse:
     def get_vacancies(self):
         results = self.get_soups()
         list_of_rooms = []
+        musashi_double = ['201', '301', '401']
 
         for house in results:
             house_name = house[0]
@@ -43,47 +44,23 @@ class Oakhouse:
             for room in rooms:
                 room_number = room.find("p", class_="p-room__caset__number").text.strip()
                 room_status = re.sub(r'\s*\|\s*\n\s*\n\s*', ' ', room_number)
+                only_room_num = room_status[:3]
 
-                if house_name == "Social Residence Ojima" or "Oak Apartment Eda" or "Foro Eifukucho":
+                if house_name == "Musashi Kosugi":
+                    if "Vacancy" in room_status and only_room_num in musashi_double:
+                        room_info = room.find("table", class_="p-room__caset__table").text.strip().split("\n")
+                        room_info = list(filter(lambda x: x.strip(), room_info))
+                        room_stat_list = room_status.split()
+                        room_status = ' '.join(room_stat_list)
+                        list_of_rooms.append(f'{house_name} {room_status} {room_info[8]}')
+
+                if house_name == "Social Residence Ojima" or house_name == "Foro Eifukucho":
                     if "Vacancy" in room_status:
-                        try:
-                            room_info = room.find("table", class_="p-room__caset__table").text.strip().split("\n")
-                            room_info = list(filter(lambda x: x.strip(), room_info))
-                            room_stat_list = room_status.split()
-                            room_status = ' '.join(room_stat_list)
-                            list_of_rooms.append(f'{house_name} {room_status} {room_info[8]}')
-                        except:
-                            continue
-                elif house_name == "Musashi Kosugi":
-                    try:
-                        bed_type = room.find("span", class_="lable", string="Double bed").text
-                    except:
-                        continue
-
-                    if "Vacancy" in room_status and "Double bed" in bed_type:
-                        try:
-                            room_info = room.find("table", class_="p-room__caset__table").text.strip().split("\n")
-                            room_info = list(filter(lambda x: x.strip(), room_info))
-                            room_stat_list = room_status.split()
-                            room_status = ' '.join(room_stat_list)
-                            list_of_rooms.append(f'{house_name} {room_status} {bed_type} {room_info[8]}')
-                        except:
-                            continue
-                else:
-                    try:
-                        bed_type = room.find("span", class_="lable").text.strip()
-                    except:
-                        continue
-
-                    if "Vacancy" in room_status and bed_type:
-                        try:
-                            room_info = room.find("table", class_="p-room__caset__table").text.strip().split("\n")
-                            room_info = list(filter(lambda x: x.strip(), room_info))
-                            room_stat_list = room_status.split()
-                            room_status = ' '.join(room_stat_list)
-                            list_of_rooms.append(f'{house_name} {room_status} {bed_type} {room_info[8]}')
-                        except:
-                            continue
+                        room_info = room.find("table", class_="p-room__caset__table").text.strip().split("\n")
+                        room_info = list(filter(lambda x: x.strip(), room_info))
+                        room_stat_list = room_status.split()
+                        room_status = ' '.join(room_stat_list)
+                        list_of_rooms.append(f'{house_name} {room_status} {room_info[8]}')
 
             list_of_rooms.append(f'{"*"*20}')
 
